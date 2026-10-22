@@ -1,0 +1,190 @@
+/* TECHNICAL DRAWING GENERATOR — refined dark drafting UI */
+:root {
+    color-scheme: dark;
+    --bg: #101316;
+    --panel: #191e23;
+    --panel-raised: #20262d;
+    --panel-hover: #2a323a;
+    --border: #343d46;
+    --text: #e8edf1;
+    --muted: #9aa6b1;
+    --accent: #00d9b0;
+    --accent-soft: rgba(0, 217, 176, .13);
+    --danger: #df6a73;
+    --radius: 7px;
+    --topbar-height: 55px;
+    --left-width: 145px;
+    --right-width: 250px;
+    --command-height: 38px;
+    --status-height: 30px;
+}
+* { box-sizing: border-box; }
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+body {
+    background: var(--bg); color: var(--text);
+    font: 13px/1.45 "Segoe UI", Inter, Arial, sans-serif;
+    letter-spacing: .01em;
+}
+button, input, select, textarea { font: inherit; }
+button { color: var(--text); cursor: pointer; }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px;
+}
+#topbar {
+    position: fixed; inset: 0 0 auto 0; height: var(--topbar-height); z-index: 100;
+    display: flex; align-items: center; gap: 6px; padding: 0 10px;
+    overflow-x: auto; overflow-y: hidden; white-space: nowrap;
+    scrollbar-width: thin; scrollbar-color: #4a5660 #171b20;
+    background: #171b20; border-bottom: 1px solid var(--border);
+    box-shadow: 0 3px 12px rgba(0,0,0,.18);
+}
+#logo { flex: 0 0 auto; margin-right: 8px; color: #f0f5f6; font-size: 12px; font-weight: 800; letter-spacing: .13em; white-space: nowrap; }
+.topButton, #topbar button {
+    flex: 0 0 auto; min-width: 58px; height: 31px; padding: 0 10px;
+    border: 1px solid #3a454d; border-radius: 5px; background: #222930;
+    color: #dfe7e9; font-size: 10px; font-weight: 700; letter-spacing: .035em;
+    transition: background .15s, border-color .15s, transform .15s;
+}
+#topbar .actionButton { min-width: 56px; }
+#topbar .actionButton[aria-label^="Undo"], #topbar .actionButton[aria-label^="Redo"] { min-width: 42px; }
+#topbar .actionButton[aria-label="Open 3D preview"] { border-color: #466b77; color: #c7e7ed; }
+#topbar .actionButton:focus-visible, #commandBar button:focus-visible { outline-offset: 1px; }
+
+.topButton:hover, #topbar button:hover { background: #303a42; border-color: #65747d; }
+.topButton:active, #topbar button:active { transform: translateY(1px); }
+#toolPanel {
+    position: fixed; top: var(--topbar-height); bottom: var(--status-height); left: 0; width: var(--left-width);
+    padding: 12px 9px; overflow-y: auto; background: var(--panel); border-right: 1px solid var(--border); z-index: 20;
+}
+#propertyPanel {
+    position: fixed; top: var(--topbar-height); right: 0; bottom: var(--status-height); width: var(--right-width);
+    padding: 12px; overflow-y: auto; background: var(--panel); border-left: 1px solid var(--border); z-index: 20;
+}
+.panelTitle { padding: 3px 5px 12px; color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: .16em; }
+.tool {
+    width: 100%; min-height: 33px; display: flex; align-items: center; gap: 9px;
+    padding: 7px 8px; margin: 2px 0; border: 1px solid transparent; border-radius: 5px;
+    background: transparent; color: #c8d0d6; text-align: left; font-size: 12px;
+}
+.tool span { width: 17px; color: #9cabb5; text-align: center; font-size: 15px; }
+.tool:hover { background: var(--panel-hover); color: white; }
+.tool.active { color: #dcfff8; background: var(--accent-soft); border-color: rgba(0,217,176,.35); }
+.tool.active span { color: var(--accent); }
+.toolSeparator { height: 1px; margin: 10px 2px; background: var(--border); }
+#drawingCanvas {
+    position: fixed; top: var(--topbar-height); left: var(--left-width); right: var(--right-width);
+    bottom: calc(var(--command-height) + var(--status-height)); display: block;
+    width: calc(100% - var(--left-width) - var(--right-width)); height: calc(100% - var(--topbar-height) - var(--command-height) - var(--status-height));
+    background: #121619; touch-action: none;
+}
+#commandBar {
+    position: fixed; left: var(--left-width); right: var(--right-width); bottom: var(--status-height); height: var(--command-height);
+    display: flex; align-items: center; gap: 6px; padding: 5px 9px;
+    background: #191e23; border-top: 1px solid var(--border); z-index: 30;
+}
+#commandInput { flex: 1; min-width: 0; height: 27px; padding: 0 10px; color: var(--text); background: #101418; border: 1px solid #38434c; border-radius: 4px; }
+#commandInput::placeholder { color: #76838e; }
+#coords { position: fixed; left: calc(var(--left-width) + 10px); bottom: calc(var(--command-height) + var(--status-height) + 7px); z-index: 10; color: #aebbc4; font: 11px/1.3 Consolas, monospace; pointer-events: none; text-shadow: 0 1px 2px #000; }
+#statusBar { position: fixed; inset: auto 0 0 0; height: var(--status-height); display: flex; align-items: center; padding: 0 12px; background: #171b20; border-top: 1px solid var(--border); color: #a3afb8; font-size: 11px; z-index: 110; }
+#propertyPanel label { display: block; margin: 11px 0 5px; color: #aeb9c1; font-size: 11px; font-weight: 650; }
+#propertyPanel input:not([type=color]), #propertyPanel select, #propertyPanel textarea {
+    width: 100%; min-height: 31px; padding: 6px 8px; color: var(--text); background: #11161a;
+    border: 1px solid #39444d; border-radius: 5px;
+}
+#propertyPanel input[type=number] { appearance: textfield; }
+#propertyPanel input[type=number]::-webkit-inner-spin-button { opacity: .5; }
+#propertyPanel select { cursor: pointer; }
+.propertyValue { padding: 7px 9px; border: 1px solid #303a42; border-radius: 5px; background: #151a1f; color: var(--accent); font-size: 11px; font-weight: 800; letter-spacing: .08em; }
+#propertyPanel button:not(.colour-swatch) {
+    min-height: 31px; padding: 7px 10px; margin-top: 10px; border: 1px solid #3b4851;
+    border-radius: 5px; background: #273139; color: #e3e9ed; font-size: 10px; font-weight: 800; letter-spacing: .07em;
+}
+#propertyPanel button:not(.colour-swatch):hover { background: #35434c; border-color: #65737d; }
+#propertyPanel button#applyProperties, #propertyPanel button#applyDoorProperties,
+#propertyPanel button#applyWindowProperties, #propertyPanel button#applyFurnitureProperties,
+#propertyPanel button#applyBathroomProperties, #propertyPanel button#applyRoomProperties,
+#propertyPanel button#applyDimensionProperties, #propertyPanel button#applyKitchenProperties,
+#propertyPanel button#applyElectricalProperties, #propertyPanel button#applyColumnProperties,
+#propertyPanel button#applyObjectColor { background: #064d45; border-color: #087f70; color: #dcfff7; }
+#propertyPanel button[id^="delete"] { margin-left: 4px; background: #382326; border-color: #674047; color: #f2c6ca; }
+.propertyMessage { margin: 8px 2px 15px; padding: 14px 10px; border: 1px dashed #3b454e; border-radius: 6px; color: #98a5af; text-align: center; line-height: 1.7; }
+/* Object colour palette */
+.object-colour-section { margin: 15px 0 4px; padding: 13px 0 3px; border-top: 1px solid var(--border); color: var(--text); }
+.colour-heading { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 10px; }
+.colour-heading h3 { margin: 0; font-size: 12px; font-weight: 750; letter-spacing: .02em; }
+.colour-heading-note { color: #71818c; font-size: 8px; font-weight: 800; letter-spacing: .12em; }
+#propertyPanel .custom-colour-label { margin: 0 0 12px; color: #9eabb5; }
+#customObjectColor { display: block; width: 100%; height: 34px; margin-top: 6px; padding: 3px; border: 1px solid #3a454e; border-radius: 5px; background: #11161a; cursor: pointer; }
+.palette-caption { margin: 0 0 7px; color: #778792; font-size: 9px; font-weight: 800; letter-spacing: .11em; }
+#objectColorPalette { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+#propertyPanel #objectColorPalette .colour-swatch {
+    width: 100%; height: 25px; min-width: 0; padding: 0; margin: 0; border-radius: 5px;
+    border: 1px solid rgba(230,239,244,.2); background: var(--swatch-colour); box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
+    transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+#propertyPanel #objectColorPalette .colour-swatch:hover { transform: translateY(-1px); border-color: #f3f7fa; box-shadow: 0 2px 7px rgba(0,0,0,.35); }
+#propertyPanel #objectColorPalette .colour-swatch.is-current { outline: 2px solid var(--accent); outline-offset: 2px; border-color: #fff; }
+#propertyPanel .apply-colour-button { width: 100%; margin-top: 12px; }
+#commandBar button {
+    flex: 0 0 auto; width: 30px; min-width: 30px; height: 28px; min-height: 28px;
+    padding: 0; display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid #3a464f; border-radius: 5px; background: #222b32;
+    color: #dce5e9; font-size: 15px; font-weight: 700; line-height: 1;
+}
+#commandBar button:hover { background: #303d45; border-color: var(--accent); }
+#commandBar #aiOpenButton { color: #d9c7ff; }
+#commandBar #voiceButton { color: #b8d9e9; }
+#commandBar #tdgRunCommand { background: #174e48; border-color: #287a70; color: #e0fff8; }
+#commandBar #tdgRunCommand:hover { background: #21665e; }
+
+
+#aiAssistantPanel { position: fixed; right: calc(var(--right-width) + 12px); bottom: 82px; z-index: 60; width: min(380px, 45vw); max-height: 65vh; display: none; flex-direction: column; overflow: hidden; border: 1px solid #3b474f; border-radius: 8px; background: #191f24; box-shadow: 0 14px 45px rgba(0,0,0,.45); }
+#aiMessages { overflow: auto; padding: 10px; color: var(--text); }
+@media (max-width: 850px) {
+    :root { --left-width: 118px; --right-width: 215px; }
+    #logo { font-size: 10px; letter-spacing: .07em; margin-right: 3px; }
+    .topButton, #topbar button { min-width: 48px; padding: 0 7px; }
+    #toolPanel { padding-inline: 5px; }
+    .tool { gap: 5px; padding-inline: 5px; font-size: 11px; }
+    #assistantToolbar { max-width: 50vw; }
+}
+@media (max-width: 620px) {
+    :root { --left-width: 88px; --right-width: 175px; }
+    #logo { display: none; }
+    #topbar { gap: 4px; padding-inline: 6px; }
+    .topButton, #topbar button { flex: 0 0 auto; min-width: 44px; font-size: 9px; padding-inline: 6px; }
+    .tool { justify-content: center; flex-direction: column; gap: 1px; padding: 5px 2px; font-size: 10px; }
+    .tool span { height: 16px; }
+    #propertyPanel { padding: 8px; }
+}
+
+
+/* Accessible Word-inspired colour palette */
+#objectColorPalette {
+    display: grid !important;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 5px;
+    padding: 9px 2px 12px;
+}
+#objectColorPalette .colour-swatch {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    aspect-ratio: 1;
+    height: auto;
+    min-height: 20px;
+    padding: 0;
+    border: 1px solid rgba(255,255,255,.24);
+    border-radius: 3px;
+    background: var(--swatch-colour);
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
+}
+#objectColorPalette .colour-swatch:hover { transform: scale(1.08); border-color: #fff; }
+#objectColorPalette .colour-swatch.is-current { outline: 2px solid #fff; outline-offset: 2px; }
+#propertyPanel .custom-colour-label { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+#propertyPanel #customObjectColor { width:46px; height:30px; padding:2px; border:1px solid #56616b; border-radius:4px; background:#20262d; }
+#propertyPanel .palette-caption { margin-top:10px; font-size:10px; letter-spacing:.12em; font-weight:800; color:#aab5bf; }
+#topbar { gap:6px; }
+#topbar .actionButton { height:31px; border-radius:5px; }
+#commandBar { min-width:0; }
+#commandInput { font-size:12px; }

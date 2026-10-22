@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Technical Drawing Generator
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+</head>
+
+<body>
+
+    <!-- ==========================================
+         TOP TOOLBAR
+         ========================================== -->
+
+    <div id="topbar">
+
+        <div id="logo">
+            TECHNICAL DRAWING
+        </div>
+
+        <button
+            class="topButton"
+            id="newDrawing"
+        >
+            NEW
+        </button>
+
+        <button
+            class="topButton"
+            id="saveDrawing"
+        >
+            SAVE
+        </button>
+
+        <button
+            class="topButton"
+            id="loadDrawing"
+        >
+            LOAD
+        </button>
+
+        <button
+            class="topButton"
+            id="exportDrawing"
+        >
+            EXPORT
+        </button>
+
+    </div>
+
+
+    <!-- ==========================================
+         LEFT TOOL PANEL
+         ========================================== -->
+
+    <div id="toolPanel">
+
+        <div class="panelTitle">
+            TOOLS
+        </div>
+
+        <button
+            class="tool active"
+            data-tool="select"
+        >
+            <span>↖</span>
+            Select
+        </button>
+
+        <button
+            class="tool"
+            data-tool="wall"
+        >
+            <span>▱</span>
+            Wall
+        </button>
+
+        <button
+            class="tool"
+            data-tool="door"
+        >
+            <span>▯</span>
+            Door
+        </button>
+
+        <button
+            class="tool"
+            data-tool="window"
+        >
+            <span>▥</span>
+            Window
+        </button>
+
+        <button
+            class="tool"
+            data-tool="room"
+        >
+            <span>□</span>
+            Room
+        </button>
+
+        <button
+            class="tool"
+            data-tool="dimension"
+        >
+            <span>↔</span>
+            Dimension
+        </button>
+
+        <button
+            class="tool"
+            data-tool="furniture"
+        >
+            <span>▱</span>
+            Furniture
+        </button>
+
+        <button
+            class="tool"
+            data-tool="bathroom"
+        >
+            <span>♢</span>
+            Bathroom
+        </button>
+
+        <button
+            class="tool"
+            data-tool="kitchen"
+        >
+            <span>⌂</span>
+            Kitchen
+        </button>
+
+        <button
+            class="tool"
+            data-tool="electrical"
+        >
+            <span>⚡</span>
+            Electrical
+        </button>
+
+        <button
+            class="tool"
+            data-tool="column"
+        >
+            <span>▦</span>
+            Column
+        </button>
+
+        <div class="toolSeparator"></div>
+
+        <button
+            class="tool"
+            data-tool="undo"
+            id="undoButton"
+        >
+            <span>↶</span>
+            Undo
+        </button>
+
+        <button
+            class="tool"
+            data-tool="redo"
+            id="redoButton"
+        >
+            <span>↷</span>
+            Redo
+        </button>
+
+    </div>
+
+
+    <!-- ==========================================
+         RIGHT PROPERTY PANEL
+         ========================================== -->
+
+    <div id="propertyPanel">
+
+        <div class="panelTitle">
+            PROPERTIES
+        </div>
+
+
+        <!-- ======================================
+             NO SELECTION
+             ====================================== -->
+
+        <div id="noSelection">
+
+            <div class="propertyMessage">
+                Select an object
+                <br>
+                to edit its properties.
+            </div>
+
+        </div>
+
+
+        <!-- ======================================
+             WALL PROPERTIES
+             ====================================== -->
+
+        <div
+            id="wallProperties"
+            style="display: none;"
+        >
+
+            <label>
+                Object
+            </label>
+
+            <div class="propertyValue">
+                WALL
+            </div>
+
+            <label>
+                Length (mm)
+            </label>
+
+            <input
+                id="wallLength"
+                type="number"
+                value="5000"
+                min="1"
+            >
+
+            <label>
+                Thickness (mm)
+            </label>
+
+            <input
+                id="wallThickness"
+                type="number"
+                value="200"
+                min="1"
+            >
+
+            <label>
+                Layer
+            </label>
+
+            <select id="wallLayer">
+
+                <option value="Walls">
+                    Walls
+                </option>
+
+                <option value="Structure">
+                    Structure
+                </option>
+
+                <option value="Partitions">
+                    Partitions
+                </option>
+
+            </select>
+
+            <button id="applyProperties">
+                APPLY
+            </button>
+
+            <button id="deleteObject">
+                DELETE
+            </button>
+
+        </div>
+
+
+        <!-- ======================================
+             DOOR PROPERTIES
+             ====================================== -->
+
+        <div
+            id="doorProperties"
+            style="display: none;"
+        >
+
+            <label>
+                Object
+            </label>
+
+            <div class="propertyValue">
+                DOOR
+            </div>
+
+            <label>
+                Type
+            </label>
+
+            <select id="doorType">
+
+                <option value="single">
+                    Single Door
+                </option>
+
+                <option value="double">
+                    Double Door
+                </option>
+
+                <option value="french">
+                    French Door
+                </option>
+
+                <option value="sliding">
+                    Sliding Door
+                </option>
+
+                <option value="pocket">
+                    Pocket Door
+                </option>
+
+                <option value="bifold">
+                    Bi-fold Door
+                </option>
+
+                <option value="closet">
+                    Closet / Bypass Door
+                </option>
+
+                <option value="archway">
+                    Archway / Open Doorway
+                </option>
+
+            </select>
+
+            <label>
+                Width (mm)
+            </label>
+
+            <input
+                id="doorWidth"
+                type="number"
+                value="900"
+                min="300"
+            >
+
+            <label>
+                Opening
+            </label>
+
+            <select id="doorOpening">
+
+                <option value="left">
+                    Left
+                </option>
+
+                <option value="right">
+                    Right
+                </option>
+
+            </select>
+
+            <label for="doorSwing">Swing side</label>
+            <select id="doorSwing">
+                <option value="inward">Inward</option>
+                <option value="outward">Outward</option>
+            </select>
+
+            <button id="applyDoorProperties">
+                APPLY
+            </button>
+
+            <button id="deleteDoor">
+                DELETE
+            </button>
+
+        </div>
+
+
+        <!-- ======================================
+             WINDOW PROPERTIES
+             ====================================== -->
+
+        <div
+            id="windowProperties"
+            style="display: none;"
+        >
+
+            <label>
+                Object
+            </label>
+
+            <div class="propertyValue">
+                WINDOW
+            </div>
+
+            <label>
+                Width (mm)
+            </label>
+
+            <input
+                id="windowWidth"
+                type="number"
+                value="1200"
+                min="300"
+            >
+
+            <button id="applyWindowProperties">
+                APPLY
+            </button>
+
+            <button id="deleteWindow">
+                DELETE
+            </button>
+
+        </div>
+
+
+        <!-- ======================================
+             FURNITURE PROPERTIES
+             ====================================== -->
+
+        <div
+            id="furnitureProperties"
+            style="display: none;"
+        >
+
+            <label>
+                Object
+            </label>
+
+            <div class="propertyValue">
+                FURNITURE
+            </div>
+
+            <label>
+                Type
+            </label>
+
+            <select id="furnitureType">
+
+                <option value="bed">
+                    Bed
+                </option>
+
+                <option value="sofa">
+                    Sofa
+                </option>
+
+                <option value="table">
+                    Table
+                </option>
+
+                <option value="chair">
+                    Chair
+                </option>
+
+                <option value="wardrobe">
+                    Wardrobe
+                </option>
+
+                <option value="desk">
+                    Desk
+                </option>
+
+                <option value="dining">
+                    Dining Table
+                </option>
+
+            </select>
+
+            <label>
+                Width (mm)
+            </label>
+
+            <input
+                id="furnitureWidth"
+                type="number"
+                value="1000"
+                min="200"
+            >
+
+            <label>
+                Depth (mm)
+            </label>
+
+            <input
+                id="furnitureDepth"
+                type="number"
+                value="600"
+                min="200"
+            >
+
+            <label>
+                Rotation
+            </label>
+
+            <input
+                id="furnitureRotation"
+                type="number"
+                value="0"
+                step="90"
+            >
+
+            <button id="applyFurnitureProperties">
+                APPLY
+            </button>
+
+            <button id="deleteFurniture">
+                DELETE
+            </button>
+
+        </div>
+
+
+        <!-- ======================================
+             BATHROOM PROPERTIES
+             ====================================== -->
+
+        <div
+            id="bathroomProperties"
+            style="display: none;"
+        >
+
+            <label>
+                Object
+            </label>
+
+            <div class="propertyValue">
+                BATHROOM
+            </div>
+
+            <label>
+                Type
+            </label>
+
+            <select id="bathroomType">
+
+                <option value="toilet">
+                    Toilet
+                </option>
+
+                <option value="sink">
+                    Sink
+                </option>
+
+                <option value="shower">
+                    Shower
+                </option>
+
+                <option value="bathtub">
+                    Bathtub
+                </option>
+
+                <option value="mirror">
+                    Mirror
+                </option>
+
+            </select>
+
+            <label>
+                Width (mm)
+            </label>
+
+            <input
+                id="bathroomWidth"
+                type="number"
+                value="700"
+                min="200"
+            >
+
+            <label>
+                Depth (mm)
+            </label>
+
+            <input
+                id="bathroomDepth"
+                type="number"
+                value="700"
+                min="200"
+            >
+
+            <label>
+                Rotation
+            </label>
+
+            <input
+                id="bathroomRotation"
+                type="number"
+                value="0"
+                step="90"
+            >
+
+            <button id="applyBathroomProperties">
+                APPLY
+            </button>
+
+            <button id="deleteBathroom">
+                DELETE
+            </button>
+
+        </div>
+
+
+        <!-- ======================================
+             ROOM PROPERTIES
+             ====================================== -->
+
+        <div
+            id="roomProperties"
+            style="display: none;"
+        >
+
+            <label>
+                Object
+            </label>
+
+            <div class="propertyValue">
+                ROOM
+            </div>
+
+            <label>
+                Room Type
+            </label>
+
+            <select id="roomType">
+
+                <option value="bedroom">
+                    Bedroom
+                </option>
+
+                <option value="living">
+                    Living Room
+                </option>
+
+                <option value="dining">
+                    Dining Room
+                </option>
+
+                <option value="kitchen">
+                    Kitchen
+                </option>
+
+                <option value="bathroom">
+                    Bathroom
+                </option>
+
+                <option value="garage">
+                    Garage
+                </option>
+
+                <option value="office">
+                    Office
+                </option>
+
+            </select>
+
+            <label>
+                Width (mm)
+            </label>
+
+            <input
+                id="roomWidth"
+                type="number"
+                value="4000"
+                min="500"
+            >
+
+            <label>
+                Depth (mm)
+            </label>
+
+            <input
+                id="roomDepth"
+                type="number"
+                value="4000"
+                min="500"
+            >
+
+            <label>
+                Name
+            </label>
+
+            <input
+                id="roomName"
+                type="text"
+                value="Room"
+            >
+
+            <button id="applyRoomProperties">
+                APPLY
+            </button>
+
+            <button id="deleteRoom">
+                DELETE
+            </button>
+
+        </div>
+
+
+        <!-- ======================================
+             DIMENSION PROPERTIES
+             ====================================== -->
+
+        <div
+            id="dimensionProperties"
+            style="display: none;"
+        >
+
+            <label>
+                Object
+            </label>
+
+            <div class="propertyValue">
+                DIMENSION
+            </div>
+
+            <label>
+                Value (mm)
+            </label>
+
+            <input
+                id="dimensionValue"
+                type="number"
+                value="5000"
+                min="1"
+            >
+
+            <label>
+                Text
+            </label>
+
+            <input
+                id="dimensionText"
+                type="text"
+                value=""
+                placeholder="Auto"
+            >
+
+            <button id="applyDimensionProperties">
+                APPLY
+            </button>
+
+            <button id="deleteDimension">
+                DELETE
+            </button>
+
+        </div>
+
+
+        <!-- ======================================
+             KITCHEN PROPERTIES
+             ====================================== -->
+
+        <div
+            id="kitchenProperties"
+            style="display: none;"
+        >
+
+            <label>
+                Object
+            </label>
+
+            <div class="propertyValue">
+                KITCHEN
+            </div>
+
+            <label>
+                Type
+            </label>
+
+            <select id="kitchenType">
+
+                <option value="counter">
+                    Counter
+                </option>
+
+                <option value="sink">
+                    Kitchen Sink
+                </option>
+
+                <option value="stove">
+                    Stove
+                </option>
+
+                <option value="refrigerator">
+                    Refrigerator
+                </option>
+
+                <option value="cabinet">
+                    Cabinet
+                </option>
+
+                <option value="island">
+                    Kitchen Island
+                </option>
+
+            </select>
+
+            <label>
+                Width (mm)
+            </label>
+
+            <input
+                id="kitchenWidth"
+                type="number"
+                value="1200"
+                min="200"
+            >
+
+            <label>
+                Depth (mm)
+            </label>
+
+            <input
+                id="kitchenDepth"
+                type="number"
+                value="600"
+                min="200"
+            >
+
+            <label>
+                Rotation
+            </label>
+
+            <input
+                id="kitchenRotation"
+                type="number"
+                value="0"
+                step="90"
+            >
+
+            <button id="applyKitchenProperties">
+                APPLY
+            </button>
+
+            <button id="deleteKitchen">
+                DELETE
+            </button>
+
+        </div>
+
+
+        <!-- ======================================
+             ELECTRICAL PROPERTIES
+             ====================================== -->
+
+        <div
+            id="electricalProperties"
+            style="display: none;"
+        >
+
+            <label>
+                Object
+            </label>
+
+            <div class="propertyValue">
+                ELECTRICAL
+            </div>
+
+            <label>
+                Type
+            </label>
+
+            <select id="electricalType">
+
+                <option value="light">
+                    Light
+                </option>
+
+                <option value="socket">
+                    Socket
+                </option>
+
+                <option value="switch">
+                    Switch
+                </option>
+
+                <option value="fan">
+                    Ceiling Fan
+                </option>
+
+            </select>
+
+            <label>
+                Rotation
+            </label>
+
+            <input
+                id="electricalRotation"
+                type="number"
+                value="0"
+                step="90"
+            >
+
+            <button id="applyElectricalProperties">
+                APPLY
+            </button>
+
+            <button id="deleteElectrical">
+                DELETE
+            </button>
+
+        </div>
+
+
+        <!-- ======================================
+             COLUMN PROPERTIES
+             ====================================== -->
+
+        <div
+            id="columnProperties"
+            style="display: none;"
+        >
+
+            <label>
+                Object
+            </label>
+
+            <div class="propertyValue">
+                COLUMN
+            </div>
+
+            <label>
+                Shape
+            </label>
+
+            <select id="columnShape">
+
+                <option value="square">
+                    Square
+                </option>
+
+                <option value="rectangular">
+                    Rectangular
+                </option>
+
+                <option value="circular">
+                    Circular
+                </option>
+
+            </select>
+
+            <label>
+                Width (mm)
+            </label>
+
+            <input
+                id="columnWidth"
+                type="number"
+                value="300"
+                min="100"
+            >
+
+            <label>
+                Depth (mm)
+            </label>
+
+            <input
+                id="columnDepth"
+                type="number"
+                value="300"
+                min="100"
+            >
+
+            <button id="applyColumnProperties">
+                APPLY
+            </button>
+
+            <button id="deleteColumn">
+                DELETE
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==========================================
+         CANVAS
+         ========================================== -->
+
+    <canvas id="drawingCanvas"></canvas>
+
+
+    <!-- ==========================================
+         COMMAND BAR
+         ========================================== -->
+
+    <div id="commandBar">
+
+        <input
+            id="commandInput"
+            type="text"
+            placeholder="Describe a drawing or type a command… e.g. create a 3-bedroom house"
+            autocomplete="off"
+            aria-label="Drawing command"
+        >
+
+        <button id="aiOpenButton" type="button" title="AI assistant" aria-label="AI assistant">✨</button>
+        <button id="voiceButton" type="button" title="Voice recognition" aria-label="Voice recognition">🎙️</button>
+        <button id="tdgRunCommand" type="button" title="Run command" aria-label="Run command">▶</button>
+
+    </div>
+
+
+    <!-- ==========================================
+         COORDINATES
+         ========================================== -->
+
+    <div id="coords">
+        X: 0 mm | Y: 0 mm
+    </div>
+
+
+    <!-- ==========================================
+         STATUS BAR
+         ========================================== -->
+
+    <div id="statusBar">
+
+        <span id="currentTool">
+            Tool: SELECT
+        </span>
+
+    </div>
+
+
+    <!-- ==========================================
+         JAVASCRIPT
+         ========================================== -->
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>
